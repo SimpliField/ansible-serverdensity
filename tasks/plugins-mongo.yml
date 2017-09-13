@@ -1,8 +1,11 @@
 ---
 - name: check if mongo is running
-  stat:
-    path=/etc/init.d/mongod
+  shell: "service mongod status"
+  args:
+    warn: false # cannot check status with service module
   register: mongo_status
+  failed_when: false
+  changed_when: false
 
 - name: install mongodb plugin
   apt:
@@ -10,7 +13,7 @@
     update_cache=true
   notify:
     - restart sd_agent
-  when: mongo_status.stat.exists
+  when: mongo_status.rc == 0
 
 - name: set mongo plugin configuration
   copy:
@@ -18,4 +21,4 @@
     dest=/etc/sd-agent/conf.d/mongo.yaml
   notify:
     - restart sd_agent
-  when: mongo_status.stat.exists
+  when: mongo_status.rc == 0
