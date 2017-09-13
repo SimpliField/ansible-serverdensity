@@ -1,0 +1,12 @@
+---
+- name: configure the plugin directory
+  lineinfile:
+    dest=/etc/sd-agent/config.cfg
+    regexp="^plugin_directory"
+    line="plugin_directory:{{serverdensity_plugins_directory}}"
+  notify:
+    - restart sd_agent
+
+- include: plugins-mongo.yml
+- include: plugins-nginx.yml
+- include: plugins-rabbitmq.yml

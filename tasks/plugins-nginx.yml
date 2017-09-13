@@ -1,0 +1,21 @@
+---
+- name: check if nginx is running
+  stat: 
+    path=/etc/init.d/nginx
+  register: nginx_status
+
+- name: install nginx plugin
+  apt:
+    pkg=sd-agent-nginx
+    update_cache=true
+  notify:
+    - restart sd_agent
+  when: nginx_status.stat.exists
+
+- name: set nginx plugin configuration
+  copy:
+    src=nginx.yaml
+    dest=/etc/sd-agent/conf.d/nginx.yaml
+  notify:
+    - restart sd_agent
+  when: nginx_status.stat.exists

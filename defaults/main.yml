@@ -1,0 +1,3 @@
+---
+serverdensity_agent_key:
+serverdensity_plugins_directory: /usr/share/python/sd-agent/checks.d

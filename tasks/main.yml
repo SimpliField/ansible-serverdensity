@@ -1,0 +1,53 @@
+---
+- name: add serverdensity GPG key into apt
+  apt_key:
+    url: "https://archive.serverdensity.com/sd-packaging-public.key"
+    state: present
+  when: not ansible_check_mode
+  tags:
+  - serverdensity
+
+- name: add apt repository
+  apt_repository:
+    repo: "deb https://archive.serverdensity.com/ubuntu/ all main"
+    state: present
+  register: serverdensity_repo_added
+  tags:
+  - serverdensity
+
+- name: apt update cache
+  apt:
+    update_cache: yes
+  when: serverdensity_repo_added.changed
+  tags:
+  - serverdensity
+
+- name: install agent
+  apt:
+    pkg: "sd-agent"
+  tags:
+  - serverdensity
+
+- name: configure account
+  lineinfile:
+    dest: "/etc/sd-agent/config.cfg"
+    regexp: "^sd_account"
+    line: "sd_account:simplifield"
+  notify:
+  - restart sd_agent
+  tags:
+  - serverdensity
+
+- name: configure key
+  lineinfile:
+    dest: "/etc/sd-agent/config.cfg"
+    regexp: "^agent_key"
+    line: "agent_key:{{serverdensity_agent_key}}"
+  notify:
+  - restart sd_agent
+  tags:
+  - serverdensity
+
+- include: plugins.yml
+  tags:
+  - serverdensity

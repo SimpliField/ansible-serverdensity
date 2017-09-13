@@ -1,0 +1,21 @@
+---
+- name: check if mongo is running
+  stat:
+    path=/etc/init.d/mongod
+  register: mongo_status
+
+- name: install mongodb plugin
+  apt:
+    pkg=sd-agent-mongo
+    update_cache=true
+  notify:
+    - restart sd_agent
+  when: mongo_status.stat.exists
+
+- name: set mongo plugin configuration
+  copy:
+    src=mongo.yaml
+    dest=/etc/sd-agent/conf.d/mongo.yaml
+  notify:
+    - restart sd_agent
+  when: mongo_status.stat.exists

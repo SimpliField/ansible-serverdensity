@@ -1,0 +1,23 @@
+galaxy_info:
+  author: Sébastien Elet
+  description: setup serverdensity agent
+  company: SimpliField
+  license: BSD
+  min_ansible_version: 2 
+  platforms:
+  - name: Ubuntu
+    versions:
+    - trusty
+    - utopic
+    - vivid
+    - wily
+    - xenial
+  galaxy_tags:
+  - serverdensity
+  - monitoring
+
+dependencies:
+- role: SimpliField.packages
+  packages:
+  - apt-transport-https
+  - python-pycurl

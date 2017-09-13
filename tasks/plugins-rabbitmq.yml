@@ -1,0 +1,21 @@
+---
+- name: check if rabbitmq is running
+  stat:
+    path=/etc/init.d/rabbitmq-server
+  register: rabbitmq_status
+
+- name: install rabbitmq plugin
+  apt:
+    pkg=sd-agent-rabbitmq
+    update_cache=true
+  notify:
+    - restart sd_agent
+  when: rabbitmq_status.stat.exists
+
+- name: set rabbitmq plugin configuration
+  copy:
+    src=rabbitmq.yaml
+    dest=/etc/sd-agent/conf.d/rabbitmq.yaml
+  notify:
+    - restart sd_agent
+  when: rabbitmq_status.stat.exists
