@@ -1,0 +1,5 @@
+init_config:
+
+instances:
+  # Specify the MongoDB URI, with database to use for reporting (defaults to "admin")
+  - server: mongodb://localhost:27017/admin
